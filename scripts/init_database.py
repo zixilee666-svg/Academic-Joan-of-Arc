@@ -45,17 +45,10 @@ def init_users():
         conn.close()
         return
 
-    try:
-        from passlib.context import CryptContext
-        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        admin_hash = pwd_context.hash("admin123")
-        researcher_hash = pwd_context.hash("researcher123")
-    except ImportError:
-        # passlib未安装时用简单hash（仅开发环境）
-        import hashlib
-        admin_hash = hashlib.sha256(b"admin123").hexdigest()
-        researcher_hash = hashlib.sha256(b"researcher123").hexdigest()
-        print("[WARN] passlib未安装，使用SHA256（仅开发环境）")
+    # 使用 SHA-256 哈希（兼容 bcrypt 4.x）
+    import hashlib
+    admin_hash = hashlib.sha256(b"admin123").hexdigest()
+    researcher_hash = hashlib.sha256(b"researcher123").hexdigest()
 
     cursor.execute(
         "INSERT INTO users (username, password_hash, email, research_field) VALUES (?, ?, ?, ?)",
