@@ -1,0 +1,54 @@
+{
+  "title": "阿里云百炼(DashScope) · 千问(Qwen) 调用凭证",
+  "generated_at": "2026-08-31 21:29:32 (UTC+8)",
+  "platform": "aliyun-bailian (DashScope OpenAI-compatible)",
+  "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+  "api_key_masked": "sk-669d2***********************88d0",
+  "model_map": {
+    "reasoning": "qwen-max",
+    "general": "qwen-plus",
+    "coding": "qwen-plus",
+    "multimodal": "qwen-vl-max"
+  },
+  "calls": [
+    {
+      "name": "对话 / chat",
+      "capability": "general",
+      "model": "qwen-plus",
+      "http_status": 200,
+      "finish_reason": "length",
+      "usage": {
+        "prompt_tokens": 30,
+        "completion_tokens": 120,
+        "total_tokens": 150
+      },
+      "content_excerpt": "我是通义千问（Qwen），由阿里巴巴集团旗下的通义实验室自主研发的超大规模语言模型；我当前正运行在阿里云百炼平台（Bailian）上，可通过百炼控制台中模型服务调用日志、API响应头中的 `x-model-id: qwen-max`（或 `qwen-plus`/`qwen-turbo`）及 `x-server: bailian` 等标识，以及百炼平台专属的鉴权机制（如使用百炼 `API Key` 调用）进行验证"
+    },
+    {
+      "name": "假设生成 / generate_hypothesis",
+      "capability": "reasoning",
+      "model": "qwen-max",
+      "http_status": 200,
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 262,
+        "completion_tokens": 769,
+        "total_tokens": 1031
+      },
+      "content_excerpt": "### 假设1\n1. **假设陈述**：在特定条件下，系外行星大气中氧和甲烷的非平衡共存状态可以作为生命活动存在的强烈指示。\n2. **创新点**：此假设首次系统性地探讨了氧-甲烷联合非平衡态作为一个独立的生命信号，并考虑了其相对于单一气体标志的独特信息价值。\n3. **可验证性**：通过构建基于不同生物化学过程及环境条件下的计算机模拟模型来预测氧与甲烷共存时可能产生的独特光谱特征；然后利用高分辨率望远镜（如詹姆斯·韦伯太空望远镜）对已知拥有大气层且具备适宜温度范围内的系外行星进行观测，比较实际获得的数据与理论预测结果。\n4. **预期结果**：如果该假说正确，那么我们应当能在一些存在生命的候选星球上发现显著高于自然背景水平的氧气与甲烷浓度比值，同时这些比例将无法仅靠地质或物理过程解释。\n5. **证伪标准**：若所有观察到的案例均能被无生命参与的过程所解释，或者没有找到任何证据表明这种特殊组合确实指向了活跃生物圈的存在，则本假设将被视为不成立。\n6. **置信度**：0.5\n\n### 假设2\n1. **假设陈述**：即使是在低信噪比的情况下，通过统计方法也可以有效地从系外行星的大气光谱数据中识别出由生物活动引起的氧-甲烷非平衡现象。\n2. **创新点**：引入先进的数据分析技术以提高在噪声较大环境下检测弱信号的能力，从而拓宽了寻找潜在宜居世界的范围。\n3. **可验证性**：首先"
+    }
+  ],
+  "health": {
+    "status": "healthy",
+    "platform": "aliyun-bailian (DashScope)",
+    "models_required": [
+      "qwen-max",
+      "qwen-plus",
+      "qwen-plus",
+      "qwen-vl-max"
+    ],
+    "ready": true
+  },
+  "ok": true,
+  "verdict": "PASS — 引擎可经百炼平台真实调用千问"
+}

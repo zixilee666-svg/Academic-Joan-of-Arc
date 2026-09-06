@@ -1,0 +1,60 @@
+# AI-Scientist Hub - Git Ignore Rules
+
+# Sensitive credentials (NEVER commit)
+.env
+.env.local
+*.env
+*.key
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/
+
+# Database
+data/
+database/
+*.db
+*.sqlite
+*.sqlite3
+
+# Node / Frontend build
+node_modules/
+dist/
+build/
+
+# Logs / Temp
+logs/
+*.log
+tmp/
+.cache/
+
+# Word temp files
+~$*
+
+# Local tools / workbuddy
+.workbuddy/
+
+# Temporary scripts and reports (underscore prefix)
+_*.py
+_*.json
+_*.txt
+_*.log
+
+# Temp conversion / utility scripts
+convert_v3.py
+md_to_docx.py
+md_to_docx_v2.py
+generate_delivery_excel.py
+sync_delivery_excel.py
+frontend_npm_audit.*
+
+# Old submission doc versions
+*提交文档_v2*
+*提交文档_v3*

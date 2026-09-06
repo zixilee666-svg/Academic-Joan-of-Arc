@@ -1,0 +1,149 @@
+version: "3.9"
+
+# ═══════════════════════════════════════════════════════════════
+# Academic Joan of Arc — 全内嵌架构·一键部署
+# 单条命令启动完整系统：docker-compose up -d
+# ═══════════════════════════════════════════════════════════════
+
+services:
+  # ───────────────────────────────────────────────────────────
+  # 1. Ollama 本地模型服务（核心AI推理引擎）
+  # ───────────────────────────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ajoa-ollama
+    volumes:
+      # 模型权重持久化（首次下载后缓存）
+      - ollama-models:/root/.ollama
+      # 预下载脚本
+      - ./scripts/ollama-pull-models.sh:/entrypoint.d/10-pull-models.sh:ro
+    environment:
+      # 模型保持加载24小时（避免频繁冷启动）
+      - OLLAMA_KEEP_ALIVE=24h
+      # 同时处理2个并行请求
+      - OLLAMA_NUM_PARALLEL=2
+      # 最多同时加载2个模型
+      - OLLAMA_MAX_LOADED_MODELS=2
+      # 启用Flash Attention加速
+      - OLLAMA_FLASH_ATTENTION=1
+    ports:
+      # 暴露11434端口供backend调用
+      - "11434:11434"
+    # 资源限制：模型推理需要充足内存
+    deploy:
+      resources:
+        limits:
+          memory: 24G
+        reservations:
+          memory: 16G
+    networks:
+      - ajoa-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ───────────────────────────────────────────────────────────
+  # 2. FastAPI 后端服务（业务逻辑层）
+  # ───────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: ajoa-backend
+    ports:
+      - "8000:8000"
+    # 注入项目根目录 .env（含 DASHSCOPE_API_KEY / LLM_PROVIDER 等凭证）
+    # 注意：下方 environment 中的同名变量优先级更高
+    env_file:
+      - .env
+    volumes:
+      # SQLite数据库持久化
+      - sqlite-data:/app/data
+      # 预打包数据集（只读挂载）
+      - ./datasets:/app/datasets:ro
+    environment:
+      # 数据库路径
+      - DATABASE_URL=sqlite:///data/ai_scientist.db
+      # Ollama服务地址（容器内网络名）
+      - OLLAMA_HOST=http://ollama:11434
+      # 模型映射
+      - MODEL_REASONING=qwen2.5:14b
+      - MODEL_GENERAL=qwen2.5:7b
+      - MODEL_CODING=qwen2.5-coder:14b
+      # 运行模式：offline = 完全离线
+      - RUN_MODE=offline
+      # 日志级别
+      - LOG_LEVEL=INFO
+    depends_on:
+      ollama:
+        condition: service_healthy
+    networks:
+      - ajoa-net
+    restart: unless-stopped
+
+  # ───────────────────────────────────────────────────────────
+  # 3. Nginx 前端静态服务
+  # ───────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ajoa-frontend
+    ports:
+      - "3000:80"
+    environment:
+      # 前端调用后端API的地址
+      - API_BASE_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - ajoa-net
+    restart: unless-stopped
+
+  # ───────────────────────────────────────────────────────────
+  # 4. [可选] Open-WebUI — Ollama可视化管理界面
+  # 访问 http://localhost:8080 可直接与模型对话
+  # ───────────────────────────────────────────────────────────
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: ajoa-webui
+    ports:
+      - "8080:8080"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - ENABLE_SIGNUP=false
+    volumes:
+      - open-webui-data:/app/backend/data
+    depends_on:
+      - ollama
+    networks:
+      - ajoa-net
+    profiles:
+      - debug  # 默认不启动，加 --profile debug 启动
+
+# ═══════════════════════════════════════════════════════════════
+# 数据卷定义
+# ═══════════════════════════════════════════════════════════════
+volumes:
+  # Ollama模型权重（大文件，单独卷管理）
+  ollama-models:
+    driver: local
+  # SQLite数据库（用户数据持久化）
+  sqlite-data:
+    driver: local
+  # Open-WebUI数据
+  open-webui-data:
+    driver: local
+
+# ═══════════════════════════════════════════════════════════════
+# 网络定义
+# ═══════════════════════════════════════════════════════════════
+networks:
+  ajoa-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

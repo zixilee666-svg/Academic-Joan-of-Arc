@@ -1,0 +1,10 @@
+# Docker构建忽略文件
+**/node_modules
+**/dist
+**/.git
+**/*.md
+test/
+datasets/*.db
+datasets/*.csv
+models/
+.env

@@ -1,0 +1,181 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-deep-dark text-gray-100 min-h-screen bg-blueprint;
+    background-size: 34px 34px, 34px 34px, 100% 100%, 100% 100%;
+    background-attachment: fixed;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0a1628;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #1a3a5c;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2a5a8c;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-deep-card border border-deep-border rounded-xl p-6 transition-all duration-300;
+  }
+
+  /* 科研仪器卡：半透明叠网格 + 四角十字准星（取景框） */
+  .card-lab {
+    @apply relative bg-deep-card/80 backdrop-blur-md border border-deep-border rounded-xl p-6 transition-all duration-300 shadow-card-lab;
+  }
+  .card-lab::before,
+  .card-lab::after {
+    content: '';
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    pointer-events: none;
+    border-color: rgba(56, 189, 248, 0.45);
+    border-style: solid;
+  }
+  .card-lab::before {
+    top: 9px;
+    left: 9px;
+    border-width: 1px 0 0 1px;
+  }
+  .card-lab::after {
+    bottom: 9px;
+    right: 9px;
+    border-width: 0 1px 1px 0;
+  }
+
+  .card-hover {
+    @apply card hover:border-primary-500/50 hover:shadow-lg hover:shadow-primary-500/10;
+  }
+
+  .card-lab-hover {
+    @apply card-lab hover:border-primary-500/60 hover:shadow-glow-blue;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-500 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-glow-cyan hover:shadow-[0_0_28px_rgba(0,212,170,0.35)];
+  }
+
+  .btn-secondary {
+    @apply bg-deep-border hover:bg-primary-900 text-gray-200 px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+  }
+
+  .input-field {
+    @apply bg-deep-dark/70 border border-deep-border rounded-lg px-4 py-2.5 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all duration-200;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-success {
+    @apply badge bg-validate-500/20 text-validate-300 border border-validate-500/20;
+  }
+
+  .badge-warning {
+    @apply badge bg-signal-500/20 text-signal-300 border border-signal-500/20;
+  }
+
+  .badge-danger {
+    @apply badge bg-red-500/20 text-red-400 border border-red-500/20;
+  }
+
+  .badge-info {
+    @apply badge bg-primary-500/20 text-primary-300 border border-primary-500/20;
+  }
+
+  .glass {
+    @apply bg-deep-card/80 backdrop-blur-xl border border-deep-border/50;
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 20px rgba(0, 212, 170, 0.15), 0 0 60px rgba(0, 212, 170, 0.05);
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.15), 0 0 60px rgba(14, 165, 233, 0.05);
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-400 via-deep-cyan to-primary-300 bg-clip-text text-transparent;
+  }
+
+  .animate-in {
+    animation: animateIn 0.3s ease-out;
+  }
+
+  @keyframes animateIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 科研栏目 kicker：编号 + 引导线 + 等宽大写标签 */
+  .kicker {
+    @apply inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.22em] text-primary-400/80;
+  }
+  .kicker::before {
+    content: '';
+    width: 22px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.7));
+  }
+
+  /* 等宽数据读数 */
+  .mono {
+    @apply font-mono tabular-nums tracking-tight;
+  }
+
+  /* 顶部扫描线（仪表盘实时感） */
+  .scanline {
+    position: relative;
+    overflow: hidden;
+  }
+  .scanline::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.18), transparent);
+    transform: translateX(-100%);
+    animation: scan 4.5s linear infinite;
+  }
+
+  .markdown-content h1 { @apply text-2xl font-bold mt-6 mb-4 text-white; }
+  .markdown-content h2 { @apply text-xl font-semibold mt-5 mb-3 text-gray-100; }
+  .markdown-content h3 { @apply text-lg font-medium mt-4 mb-2 text-gray-200; }
+  .markdown-content p { @apply mb-4 leading-relaxed text-gray-300; }
+  .markdown-content ul { @apply list-disc list-inside mb-4 space-y-1 text-gray-300; }
+  .markdown-content ol { @apply list-decimal list-inside mb-4 space-y-1 text-gray-300; }
+  .markdown-content code { @apply bg-deep-dark px-1.5 py-0.5 rounded text-sm font-mono text-primary-300; }
+  .markdown-content pre { @apply bg-deep-dark rounded-lg p-4 overflow-x-auto mb-4; }
+  .markdown-content pre code { @apply bg-transparent p-0 text-gray-300; }
+  .markdown-content table { @apply w-full mb-4 border-collapse; }
+  .markdown-content th { @apply bg-deep-dark border border-deep-border px-3 py-2 text-left text-sm font-medium text-gray-200; }
+  .markdown-content td { @apply border border-deep-border px-3 py-2 text-sm text-gray-300; }
+  .markdown-content blockquote { @apply border-l-4 border-primary-500 pl-4 italic text-gray-400 my-4; }
+  .markdown-content a { @apply text-primary-400 hover:text-primary-300 underline; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+}
