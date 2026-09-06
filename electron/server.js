@@ -1,5 +1,5 @@
 /**
- * AI-Scientist Hub - 自包含服务器 (Electron内置)
+ * Academic Joan of Arc - 自包含服务器 (Electron内置)
  * 同时提供后端API和前端静态文件服务
  * 端口: 3100 (独立端口，不与开发环境冲突)
  */
@@ -426,7 +426,7 @@ app.post('/api/research/literature', authMiddleware, async (req, res) => {
     query: String(query).trim(),
     rows: String(n),
     select: 'DOI,title,author,issued,container-title,abstract,URL,type,score,is-referenced-by-count',
-    'mailto': 'ai-scientist-hub@example.org',
+    'mailto': 'academic-joan-of-arc@example.org',
   });
   if (fromYear) params.set('filter', `from-pub-date:${parseInt(fromYear, 10)}-01-01`);
 
@@ -435,7 +435,7 @@ app.post('/api/research/literature', authMiddleware, async (req, res) => {
   const timer = setTimeout(() => controller.abort(), 20000);
   try {
     const response = await fetch(url, {
-      headers: { 'User-Agent': 'AI-Scientist-Hub/3.0 (mailto:ai-scientist-hub@example.org)' },
+      headers: { 'User-Agent': 'Academic-Joan-of-Arc/3.0 (mailto:academic-joan-of-arc@example.org)' },
       signal: controller.signal,
     });
     clearTimeout(timer);
@@ -598,13 +598,13 @@ async function crossrefSearch(query, rows = 8) {
     query: String(query).trim(),
     rows: String(n),
     select: 'DOI,title,author,issued,container-title,abstract,URL,type,score,is-referenced-by-count',
-    'mailto': 'ai-scientist-hub@example.org',
+    'mailto': 'academic-joan-of-arc@example.org',
   });
   const url = `https://api.crossref.org/works?${params.toString()}`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 20000);
   try {
-    const resp = await fetch(url, { headers: { 'User-Agent': 'AI-Scientist-Hub/3.0 (mailto:ai-scientist-hub@example.org)' }, signal: controller.signal });
+    const resp = await fetch(url, { headers: { 'User-Agent': 'Academic-Joan-of-Arc/3.0 (mailto:academic-joan-of-arc@example.org)' }, signal: controller.signal });
     clearTimeout(timer);
     if (!resp.ok) return [];
     const data = await resp.json();
@@ -1130,7 +1130,7 @@ function writeEnvFile(updates) {
     }
     lines = fs.readFileSync(ENV_PATH, 'utf-8').split(/\r?\n/);
   } else {
-    lines = ['# AI-Scientist Hub (Electron桌面版) 环境配置（由设置页生成）'];
+    lines = ['# Academic Joan of Arc (Electron桌面版) 环境配置（由设置页生成）'];
   }
 
   const remaining = new Map(entries);
@@ -1253,7 +1253,7 @@ app.put('/api/settings/preferences', authMiddleware, (req, res) => {
 app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
-    service: 'AI-Scientist Hub Desktop',
+    service: 'Academic Joan of Arc Desktop',
     version: '3.0.0',
     port: APP_PORT,
     timestamp: new Date().toISOString(),
@@ -1278,7 +1278,7 @@ app.use((err, _req, res, _next) => {
 // Start server
 const server = app.listen(APP_PORT, '127.0.0.1', () => {
   console.log(`\n============================================`);
-  console.log(`  AI-Scientist Hub v3.0 已启动！`);
+  console.log(`  Academic Joan of Arc v3.0 已启动！`);
   console.log(`  访问地址: http://127.0.0.1:${APP_PORT}`);
   console.log(`  演示账号: admin / Admin@2026!`);
   console.log(`  推理模式: ${BAILIAN_CONFIG.apiKey ? 'live（百炼已配置）' : 'mock（未配置 BAILIAN_API_KEY）'}`);
@@ -1290,7 +1290,7 @@ server.on('error', (err) => {
     const newPort = APP_PORT + 1;
     console.log(`端口 ${APP_PORT} 已被占用，尝试端口 ${newPort}...`);
     app.listen(newPort, '127.0.0.1', () => {
-      console.log(`AI-Scientist Hub 已启动在端口 ${newPort}`);
+      console.log(`Academic Joan of Arc 已启动在端口 ${newPort}`);
     });
   }
 });

@@ -15,7 +15,7 @@ Academic Joan of Arc — 一键本地启动器
   7. 自动打开浏览器 http://localhost:8000
   8. 控制台保留日志；关闭窗口即停止服务
 
-双击 start.bat 或桌面快捷方式「AI科研平台」即可运行。
+双击 start.bat 或桌面快捷方式「Academic Joan of Arc」即可运行。
 """
 import os
 import sys
